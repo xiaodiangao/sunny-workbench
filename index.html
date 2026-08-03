@@ -3,27 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#FFC83D">
+<meta name="theme-color" content="#FFE082">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sunny">
 <title>Sunny 工作台</title>
-<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADO0lEQVR4nO3TW2obURBFUU0s88+sHBIIGL9lyarq3qtg/Te3z75clt/T719PHNv0hlbf9M9h3vQGH3rTj81+0xu9+00/KMc1vd2bbvrxOI/pLV9104/FeU1v+8Obfhw6prf+6qYfhJ7pzf+76UcA4yfP+MkzfvKMnzzjJ8/4yTN+8oyfPAGQZvzkGT95AiDN+MkTAGnGT54ASDN+8gRAmgBIM37yBECaAEgTAGnGT54ASBMAaQIgTQCkCYA0AZAmANKMnzQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAvgp22/6fZYQwE/YftPvs4gA7m37Tb/PMgK4p+03/T4LCeBett/0+ywlgHvYftPvs5gAbrX9pt9nOQHcYvtNv88BCOC7tt/0+xyEAL5j+02/z4EI4Ds23/TbHIwArrX9pt/nYARwje03/T4HJICv2n7T73NQAviK7Tf9PgcmgM9sv+n3OTgBfGT7Tb/PCQjgPdtv+n1OQgBv2X7T73MiAnhp+02/z8kI4LntN/0+JyQA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKRd/t70R8AUAZAmANIEQJoASBMAaQIgTQCkXf7f9IfAo12e3/THwKMJgDQBkHZ5edMfBI/yavwCoEQApL0ZgAgoeHf8AqDgwwBEwJl9On4BcGZfCkAEnNGXxy8AzuiqAETAmVw9fhFwFt8evwA4g5sCEAFHdvP4RcBR3W38IuBo7j5+EXAUPzZ+EbDdj49fBGz1sPGLgG0ePn4RsMXY+J/f9CPQM735Vzf9IHRMb/3Dm34czmt621fd9GNxHtNbvummH4/jmt7u3W/6QdlveqMPvenHZt7k/v4A5NLFiTRQXEoAAAAASUVORK5CYII=">
-<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADO0lEQVR4nO3TW2obURBFUU0s88+sHBIIGL9lyarq3qtg/Te3z75clt/T719PHNv0hlbf9M9h3vQGH3rTj81+0xu9+00/KMc1vd2bbvrxOI/pLV9104/FeU1v+8Obfhw6prf+6qYfhJ7pzf+76UcA4yfP+MkzfvKMnzzjJ8/4yTN+8oyfPAGQZvzkGT95AiDN+MkTAGnGT54ASDN+8gRAmgBIM37yBECaAEgTAGnGT54ASBMAaQIgTQCkCYA0AZAmANKMnzQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAvgp22/6fZYQwE/YftPvs4gA7m37Tb/PMgK4p+03/T4LCeBett/0+ywlgHvYftPvs5gAbrX9pt9nOQHcYvtNv88BCOC7tt/0+xyEAL5j+02/z4EI4Ds23/TbHIwArrX9pt/nYARwje03/T4HJICv2n7T73NQAviK7Tf9PgcmgM9sv+n3OTgBfGT7Tb/PCQjgPdtv+n1OQgBv2X7T73MiAnhp+02/z8kI4LntN/0+JyQA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKRd/t70R8AUAZAmANIEQJoASBMAaQIgTQCkXf7f9IfAo12e3/THwKMJgDQBkHZ5edMfBI/yavwCoEQApL0ZgAgoeHf8AqDgwwBEwJl9On4BcGZfCkAEnNGXxy8AzuiqAETAmVw9fhFwFt8evwA4g5sCEAFHdvP4RcBR3W38IuBo7j5+EXAUPzZ+EbDdj49fBGz1sPGLgG0ePn4RsMXY+J/f9CPQM735Vzf9IHRMb/3Dm34czmt621fd9GNxHtNbvummH4/jmt7u3W/6QdlveqMPvenHZt7k/v4A5NLFiTRQXEoAAAAASUVORK5CYII=">
-<link rel="manifest" href="data:application/manifest+json,%22{\%22name\%22:\%22Sunny \u5de5\u4f5c\u53f0\%22,\%22short_name\%22:\%22Sunny\%22,\%22start_url\%22:\%22.\%22,\%22display\%22:\%22standalone\%22,\%22background_color\%22:\%22#FFFBE6\%22,\%22theme_color\%22:\%22#FFC83D\%22,\%22icons\%22:[{\%22src\%22:\%22data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADO0lEQVR4nO3TW2obURBFUU0s88+sHBIIGL9lyarq3qtg/Te3z75clt/T719PHNv0hlbf9M9h3vQGH3rTj81+0xu9+00/KMc1vd2bbvrxOI/pLV9104/FeU1v+8Obfhw6prf+6qYfhJ7pzf+76UcA4yfP+MkzfvKMnzzjJ8/4yTN+8oyfPAGQZvzkGT95AiDN+MkTAGnGT54ASDN+8gRAmgBIM37yBECaAEgTAGnGT54ASBMAaQIgTQCkCYA0AZAmANKMnzQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAvgp22/6fZYQwE/YftPvs4gA7m37Tb/PMgK4p+03/T4LCeBett/0+ywlgHvYftPvs5gAbrX9pt9nOQHcYvtNv88BCOC7tt/0+xyEAL5j+02/z4EI4Ds23/TbHIwArrX9pt/nYARwje03/T4HJICv2n7T73NQAviK7Tf9PgcmgM9sv+n3OTgBfGT7Tb/PCQjgPdtv+n1OQgBv2X7T73MiAnhp+02/z8kI4LntN/0+JyQA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKRd/t70R8AUAZAmANIEQJoASBMAaQIgTQCkXf7f9IfAo12e3/THwKMJgDQBkHZ5edMfBI/yavwCoEQApL0ZgAgoeHf8AqDgwwBEwJl9On4BcGZfCkAEnNGXxy8AzuiqAETAmVw9fhFwFt8evwA4g5sCEAFHdvP4RcBR3W38IuBo7j5+EXAUPzZ+EbDdj49fBGz1sPGLgG0ePn4RsMXY+J/f9CPQM735Vzf9IHRMb/3Dm34czmt621fd9GNxHtNbvummH4/jmt7u3W/6QdlveqMPvenHZt7k/v4A5NLFiTRQXEoAAAAASUVORK5CYII=\%22,\%22sizes\%22:\%22192x192\%22,\%22type\%22:\%22image/png\%22}]}%22">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+<link rel="manifest" href="data:application/manifest+json,%22{\%22name\%22:\%22Sunny \u5de5\u4f5c\u53f0\%22,\%22short_name\%22:\%22Sunny\%22,\%22start_url\%22:\%22.\%22,\%22display\%22:\%22standalone\%22,\%22background_color\%22:\%22#FFFDF5\%22,\%22theme_color\%22:\%22#FFE082\%22,\%22icons\%22:[{\%22src\%22:\%22data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAL60lEQVR4nO3dWY8cVxkG4Leq1+mZnn1sM/EyGMdOYoLiACZiCYsECIgUNnELEhLilj/gC/+G3CIhIcEdF0AignBygWUgBicmzooxYydeJuPZp/fuKi6+bs/iWXqpU6eqv/eRShNN7OoT5Xv71HIWBxHjz573bbeBzHFmzjm227CZ1caw2AmwG4rQP5hFT3sJOwyhfRgLnzoRVhCMfwgLn3phOgjGTs7CpyCZCkLgJ2Xhk0lBB8EN8mQsfjIt6BoLJE0sfLIhiN6g5x6AxU+2BFF7PQWAxU+29VqDXQeAxU9R0UstdhUAFj9FTbc12XEAWPwUVd3UZkcBYPFT1HVao20HgMVPcdFJrbYVABY/xU27NbtvAFj8FFft1G6gQyGI4mbPAPDbn+JuvxreNQAsfuoXe9UyL4FItR0DwG9/6je71TR7AFLtoQDw25/61U61zR6AVNsSAH77U7/bXuPsAUi1BwHgtz9psbnW2QOQagwAqeYCvPwhfVo1zx6AVGMASDUGgFRjAEg1hzfApBl7AFKNASDVGABSjQEg1RgAUo0BINUYAFKNASDVGABSjQEg1RgAUo0BINUYAFItabsBfcVxgeQEkJoEUlNAchhIDMnh5gAnBThJwEnI4XsAGvLTrwFeBfCrgFcGGkXAKwCNdaBRAOrLQH0FaKw0/x4FgQHoiQtkj8mROQZkHpHCbpfjyjkcAMhIUPblA/VVoLYA1O8DtftAdR6ozUmAqCMMQDeyR4HBJ4Hc44A7EPKHO0ByRA4c3/qv6ktAdQ6o3gEqt4HKHelRaFcMQNtcYPA0MPwMkD5kuzE7S47JkXus+QsfqM0D5VtA+SZQuSWXVPQAA9COgRPA2DeA1ITtlnTIAVIH5Mh/Rn5V+QC49yurrYoSBmAviUFg4jlg4KTtlgQnOWq7BZHCAOwmOwNMfq/NG1OKKwZgJ0NngInvoPl4hvoYA7Dd8DPA2Ndtt4JCwjfBmw09xeJXhgFoyRwFxr9tuxUUMgYAANwMMPX9zt7iUl9gAAC57EnkbbeCLGAAMtPy1IdUYgBGnrXdArJIdwDSB4GBR223gizS/R5g6KlwPqexJgPSanMyjLmxKmP8vYrMA/A9GRrtJGXOgDsAJPNyX5IclbkFqSkgNQ7t31lBUxwAB8g9Ye70XgVYfwMoXJUhyvvxG3KgIiM2a/MP/xknCaSngcxhIHtE5iC4maBbroreAGSPmBvnU3gTWHwZ8ErBntevy5Dmyi1gFZAJOUdktOrASZmJRh3RG4DMUTPnXfwTsHbZzLkf4sk4//JNYOmC3NPkTgODT8i8ANoXAxCktX+GWPw7qM7JsfyKTNMcelpmrfEF3670BiDoWV2NArD052DP2YtWz+C+LDf7w2f5sm8HOgPgpGSyS5AK15o3sRHjFYHVS8Da35vzmA3e+MeQzgCYuD4uXQ/+nEHyPWD9qhz0gM6HykkDT38aq8Gfk4zTGQAnHfw5g37kSaFQGoBU8OcMfX0gCoLSABh4LJg6EPw5yTidAfDrwZ9zkE9X4khpAGrBnzP3uIzRoVjRGYBG0cx5p34Yw9XjdFMagBUz503kgUM/4cumGNEZgPqamfsAQPYBmPoBcOinEgSOw4k0nW+C4QPVe2av2TPTEgSvBBTfBYrvA+VZLlceMUoDAFk/P4ybVndAJt0PnQHgAZW7skJz5bas419fNt8G2pXeAJSvA8OfC/lDXdlFJvPIxq+8koSiegeoNn/WOawiLIoDcFOmLdqeUugOAAPH5WhpFDbCUPlQeguvbK+NfUxvAPyGTF1sbRwRJYnB5jTHExu/q92XS6fSDbmX8Aw9ylVGbwAAmb0VxQDsJDUpR2sRr+rd5s31O7LSBHVFdwBq92Uiy+Anbbekc+mPyTH6VZkGWbgKrP+bo1I7pPM9wGbLr5p7JxCW9EHZw+zwL4DJ52UNIWoLA1BfBpb+YrsVwXASwOCngOmfA1M/4rCMNjAAgNwLlN633Ypg5U5JEMa/aWYCUJ9gAFrmfyc3ln3FBfJngemfcaTqLhiAFr8GzP1Gnr33m+QYcOjHsk4QbcEAbOYVgXu/jv4KD11xZefL0S/bbkikMADb+VXgo9/K0yH4tlsTvJFnLQwBiS4GYDcrF4G7v+zD+wLII9Ps8f3/nAIMwF6qdyUECy/237o/k8/L3AXlGIB9+cD6FeD2C7Lyc33RdoOCkRgCRr9iuxXW6R4K0Qm/Ie8L1i7LtkpDZ2SwWpxnfOWfBtZekyEhSjEA3Sj9Rw43K6tB5E4B2Y/LDi6x4sgN8cKLthtiTdz+j0WLVwbWX5fDSQLZGTkyR2WgmhODK8zBJ2UoiFex3RIrGICg+HV5f9B6h+CkZF5w5jCQOSKzwKJ40+mk5JKucM12S6xgAEzxaxubVLQkx2VPr/RhCUT6AADHWhMfGDjJAFAI6ovA+iKA5hr9brrZOxyVe4jMNKwEInss/M+MCAbAJq8KlP4rB15tzg8+IeuMZj8R3hOmxJAs6tVYC+fzIoQBiBKvJPOUC28CiZwMXsufDX47p52kDwAlfQGIwWMKpRpFGY5x+wVg9R/mPy8xYv4zIogBiDq/KrtPLvze7Ockh82eP6IYgLhYvwqs/NXc+W2vj2QJAxAnKxfN3aia2DYqBhiAOPHrQOFtM+eO85imHjAAcVO+Yea8cV8apksMQNyYWjjXM7BtVAwwAHHjGxq0ZmLftBjQG4DRr8lLprhd+yYM7HIPyIrUCul9E5wYAka+AIx8Xp6urL8uk16iLjlm5rym9k2LOL0BaEnkgfFvASNfbM74+le01+I3tQGf0p1qGICWRF4ui0a+BKy/Aay+Fr35v8kxIPeogRP7QC1i/60hYQC2c1JA/rNylGfl0qj4rv3HhE5CNt0zcdtWnVN7E8wA7KU1xdErA4W3gOLbzQkuIS+Y5aaBie/KNEsTKrfNnDcGGIB2uFkg/2k5vCJQfE+O8k3z255mjgATz8nuMKaUZ82dO+IYgE65uY1tT31PFtMtz0oYqveC2bvLSckMseGz8tMkvyYrXCjFAPTCcZuT3g/LUyRABqtV54DaPFBfkRXl6qsSDL8mb1z9ulzTO2nATQHuoGxmkZqQy5zsTHhLrJSuq73+BxiA4CXywEB+6w6PUbZ+xXYLrNL7Jphk7dOSocF1McEAaLZy0XYLrGMAtCrdkPcbyjEAGvl1YFHveqCbMQAaLfxR7dif7RgAbVYvybpDBIAB0GXtCrD0iu1WRArfA2ixeglYumC7FZGjNwBxmPwSBK8CLL6kdvXn/egNwOJLQPEakDsN5B4LZ/3NsJVngYU/8IZ3D44/e74PN8PtlCPjb3KnZAiDqWmHYaktAMsXZMQq7UlvD7CFD5T/JwcApKYkCNnjsqFFXFZNq9wCVi83X3B5tlsTCwzATmrzcqz+TUZ8pqebe38dln+O0uVSbV6+6QtvAbWPbLcmdhiA/fgeUPlQjpbkiAQhfVB6i9QkkBpHKE+V64tA+QNpT3k2evOWY4YB6EZ9RY7iOxu/c1y5d0iMSECSwzI02s0BiQHZ/cXNyjh/JwEg0fzpy9AEv9E8KrI3gFeUtXoaa3JNX1uQYle6m6MpDEBQfG+jUCk2+CaYVGMASDUGgFRjAEg1BoBUYwBINQaAVGMASDUGgFRjAEg1BoBUYwBINQaAVGMASDXXmTnn2G4EkQ3OzDmHPQCpxgCQagwAqcYAkGouIDcDthtCFKZWzbMHINUYAFLtQQB4GURabK519gCk2pYAsBegfre9xtkDkGoPBYC9APWrnWqbPQCptmMA2AtQv9mtptkDkGq7BoC9APWLvWp5zx6AIaC426+GeQlEqu0bAPYCFFft1G5bPQBDQHHTbs22fQnEEFBcdFKrHd0DMAQUdZ3WaMc3wQwBRVU3tdnVUyCGgKKm25rs+jEoQ0BR0Ust9vQegCEg23qtwZ5fhDEEZEsQtRdo8fqz5/0gz0e0kyC/dAMdCsHegEwLusaMFSx7AwqSqS9X49/YDAL1wvRVRWiXLAwCdSKsy+nQr9kZBNpL2PeRVm9aGQYC7D48idxTG4aiv0XtSeH/AcoDb7/ckdd+AAAAAElFTkSuQmCC\%22,\%22sizes\%22:\%22192x192\%22,\%22type\%22:\%22image/png\%22}]}%22">
 <style>
 :root {
-  --bg: #FFFBE6;
+  --bg: #FFFDF5;
   --card: #FFFFFF;
-  --yellow: #FFC83D;
-  --yellow-light: #FFE680;
-  --yellow-deep: #F0A800;
-  --text: #5A4A2A;
-  --text-soft: #8C7A55;
-  --line: #F0E6C0;
-  --done: #9CCC65;
+  --yellow: #FFE082;
+  --yellow-light: #FFF3C4;
+  --yellow-deep: #F5C842;
+  --text: #6B5B3E;
+  --text-soft: #A89968;
+  --line: #F5EFD9;
+  --done: #AED581;
   --sidebar-w: 220px;
-  --shadow: 0 4px 0 rgba(240,166,0,0.15), 0 6px 16px rgba(240,166,0,0.08);
+  --shadow: 0 3px 0 rgba(245,200,66,0.12), 0 5px 14px rgba(245,200,66,0.06);
+  --period: #E57373;
+  --period-light: #F8BBD0;
+  --period-predict: #FCE4EC;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -40,7 +43,7 @@ html, body {
 /* ===== Sidebar ===== */
 .sidebar {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
-  background: linear-gradient(180deg, #FFE680 0%, #FFF8D6 100%);
+  background: linear-gradient(180deg, #FFF8E1 0%, #FFFDF8 100%);
   border-right: 2px solid var(--line);
   display: flex; flex-direction: column;
   overflow-y: auto;
@@ -58,8 +61,7 @@ html, body {
   font-size: 22px; font-weight: 900; color: #FFF;
   box-shadow: 0 2px 0 var(--yellow-deep);
   flex-shrink: 0;
-}
-.side-title { font-size: 22px; font-weight: 900; color: #5A3800; line-height: 1; }
+.side-title { font-size: 22px; font-weight: 900; color: #8B6914; line-height: 1; }
 .side-date { font-size: 11px; color: var(--text-soft); margin-top: 2px; font-weight: 700; }
 .side-progress { padding: 6px 16px 12px; }
 .side-progress-bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; }
@@ -80,7 +82,7 @@ html, body {
   position: relative;
 }
 .side-item:hover { background: rgba(255,200,61,0.25); }
-.side-item.active { background: var(--yellow); color: #5A3800; box-shadow: 0 2px 0 var(--yellow-deep); }
+.side-item.active { background: var(--yellow); color: #8B6914; box-shadow: 0 2px 0 var(--yellow-deep); }
 .side-item.done { color: var(--text-soft); }
 .side-item.done .side-item-name { text-decoration: line-through; }
 .side-item-icon {
@@ -106,7 +108,7 @@ html, body {
   transition: all 0.15s;
 }
 .side-nav-item:hover { background: rgba(255,200,61,0.2); color: var(--text); }
-.side-nav-item.active { background: var(--yellow); color: #5A3800; box-shadow: 0 2px 0 var(--yellow-deep); }
+.side-nav-item.active { background: var(--yellow); color: #8B6914; box-shadow: 0 2px 0 var(--yellow-deep); }
 .side-nav-item svg { width: 18px; height: 18px; }
 
 /* ===== Main ===== */
@@ -166,7 +168,7 @@ html, body {
   border-radius: 12px;
   border: none;
   background: var(--yellow);
-  color: #5A3800;
+  color: #8B6914;
   font-weight: 800;
   font-family: inherit;
   font-size: 14px;
@@ -307,13 +309,13 @@ html, body {
 .cal-empty:hover { background: transparent; }
 .cal-today {
   background: var(--yellow);
-  color: #5A3800;
+  color: #8B6914;
   box-shadow: 0 2px 0 var(--yellow-deep);
 }
 .cal-day { line-height: 1; }
 .cal-weight {
   font-size: 11px; font-weight: 700;
-  color: #C49A2A;
+  color: #D4A82E;
   margin-top: 6px;
   line-height: 1;
   white-space: nowrap;
@@ -322,6 +324,26 @@ html, body {
   max-width: 100%;
 }
 .cal-has { background: #FFFDF0; }
+
+/* ===== Period dot ===== */
+.cal-period-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  line-height: 1;
+}
+.cal-period-dot.actual { background: var(--period); }
+.cal-period-dot.predict { background: var(--period-light); }
+.cal-period-cell { background: #FFF0F4; }
+.cal-period-cell.cal-today { background: var(--yellow); }
+
+/* ===== Period legend ===== */
+.period-legend {
+  display: flex; gap: 14px; justify-content: center;
+  margin-top: 8px; font-size: 11px; color: var(--text-soft); font-weight: 700;
+}
+.period-legend-item { display: flex; align-items: center; gap: 5px; }
+.period-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
 /* ===== Calendar Modal ===== */
 .cal-modal-mask {
@@ -334,7 +356,7 @@ html, body {
 }
 .cal-modal-mask.show { display: flex; animation: fadeIn 0.2s; }
 .cal-modal {
-  background: #FFFBE6;
+  background: #FFFDF5;
   border-radius: 20px;
   padding: 20px;
   width: 100%; max-width: 380px;
@@ -448,6 +470,7 @@ html, body {
     <div id="taskPanels"></div>
     <div class="main-panel" id="panel-history"></div>
     <div class="main-panel" id="panel-weight"></div>
+    <div class="main-panel" id="panel-period"></div>
     <div class="main-panel" id="panel-stats"></div>
     <div class="main-panel" id="panel-settings"></div>
   </main>
@@ -480,7 +503,7 @@ const TASKS = [
 const STORAGE_KEY = 'sunny_workbench_v2';
 const SUPA_KEY = 'sunny_supa_config';
 
-let state = { days: {}, weightLog: [], settings: { remindTime: '09:00' } };
+let state = { days: {}, weightLog: [], periodLog: [], periodSettings: { cycle: 28, duration: 5 }, settings: { remindTime: '09:00' } };
 let supaConfig = { url: '', key: '' };
 let currentPanel = 'welcome';
 
@@ -507,6 +530,8 @@ function loadLocal() {
       const p = JSON.parse(raw);
       state.days = p.days || {};
       state.weightLog = p.weightLog || [];
+      state.periodLog = p.periodLog || [];
+      state.periodSettings = Object.assign(state.periodSettings, p.periodSettings || {});
       state.settings = Object.assign(state.settings, p.settings || {});
     }
   } catch(e) {}
@@ -550,6 +575,12 @@ async function pullFromSupa() {
         remote.weightLog.forEach(w => { if (!exist.has(w.date)) state.weightLog.push(w); });
         state.weightLog.sort((a,b)=>a.date.localeCompare(b.date));
       }
+      if (Array.isArray(remote.periodLog)) {
+        const existP = new Set(state.periodLog.map(p=>p.date));
+        remote.periodLog.forEach(p => { if (!existP.has(p.date)) state.periodLog.push(p); });
+        state.periodLog.sort((a,b)=>a.date.localeCompare(b.date));
+      }
+      if (remote.periodSettings) state.periodSettings = Object.assign(state.periodSettings, remote.periodSettings);
       saveLocal();
       return true;
     }
@@ -631,6 +662,7 @@ function renderSidebar() {
   const navItems = [
     { id: 'history', label: '历史记录', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>` },
     { id: 'weight-track', label: '体重追踪', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l5-6 4 3 5-8 4 5"/><path d="M3 21h18"/></svg>` },
+    { id: 'period-track', label: '经期日历', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>` },
     { id: 'stats', label: '数据看板', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 3 2 5-7"/></svg>` },
     { id: 'settings', label: '设置', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>` },
   ];
@@ -678,6 +710,7 @@ function renderCurrentPanel() {
   const special = {
     'history': 'panel-history',
     'weight-track': 'panel-weight',
+    'period-track': 'panel-period',
     'stats': 'panel-stats',
     'settings': 'panel-settings'
   };
@@ -687,6 +720,7 @@ function renderCurrentPanel() {
   });
   if (currentPanel === 'history') renderHistoryPanel();
   if (currentPanel === 'weight-track') renderWeightPage();
+  if (currentPanel === 'period-track') renderPeriodPage();
   if (currentPanel === 'stats') renderStatsPanel();
   if (currentPanel === 'settings') renderSettingsPanel();
 }
@@ -808,6 +842,245 @@ function renderHistoryPanel() {
   }
   html += `</div>`;
   panel.innerHTML = html;
+}
+
+// ==================== Period Page ====================
+let pCalYear, pCalMonth;
+
+function renderPeriodPage() {
+  const panel = document.getElementById('panel-period');
+  const now = new Date();
+  if (!pCalYear) { pCalYear = now.getFullYear(); pCalMonth = now.getMonth() + 1; }
+
+  const cycle = state.periodSettings.cycle || 28;
+  const duration = state.periodSettings.duration || 5;
+  const periodMap = computePeriodMap();
+
+  let html = `<div class="panel-header"><div style="font-size:28px;">🌸</div><div><div class="panel-title">经期日历</div><div class="panel-sub">周期 ${cycle} 天 · 经期 ${duration} 天</div></div></div><div class="panel-body">`;
+
+  // --- Calendar ---
+  html += `<div class="task-detail-card" style="padding:12px 16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <button class="cal-nav-btn" onclick="pCalShift(-1)">◀</button>
+      <span style="font-size:15px;font-weight:800;color:var(--text);">${pCalYear}年${pCalMonth}月</span>
+      <button class="cal-nav-btn" onclick="pCalShift(1)">▶</button>
+    </div>
+    <div class="cal-grid" id="pCalGrid">${renderPeriodCalendar(periodMap)}</div>
+    <div class="period-legend">
+      <div class="period-legend-item"><span class="period-legend-dot" style="background:var(--period);"></span>已记录</div>
+      <div class="period-legend-item"><span class="period-legend-dot" style="background:var(--period-light);"></span>预测</div>
+    </div>
+  </div>`;
+
+  // --- Quick record ---
+  html += `<div class="task-detail-card">
+    <div style="font-size:14px;font-weight:800;margin-bottom:8px;">快速记录</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="flex:1;min-width:130px;">
+        <input type="date" class="setting-input" id="periodDate" value="${todayKey()}" onchange="pCalJumpTo(this.value)">
+      </div>
+      <button class="btn" onclick="addPeriodFromQuick()" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">标记经期</button>
+    </div>
+    <div class="setting-hint" style="margin-top:6px;">选择日期后点「标记经期」，可标记开始日期或任意经期中的日期</div>
+  </div>`;
+
+  // --- Settings ---
+  html += `<div class="task-detail-card">
+    <div style="font-size:14px;font-weight:800;margin-bottom:8px;">周期设置</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:120px;">
+        <label class="setting-label">月经周期（天）</label>
+        <input type="number" min="15" max="45" class="setting-input" id="cycleDays" value="${cycle}" onchange="updatePeriodSettings()">
+      </div>
+      <div style="flex:1;min-width:120px;">
+        <label class="setting-label">经期天数</label>
+        <input type="number" min="2" max="10" class="setting-input" id="durationDays" value="${duration}" onchange="updatePeriodSettings()">
+      </div>
+    </div>
+  </div>`;
+
+  // --- History ---
+  const sorted = [...state.periodLog].sort((a,b) => b.date.localeCompare(a.date));
+  if (sorted.length > 0) {
+    html += `<div class="task-detail-card">
+      <div style="font-size:14px;font-weight:800;margin-bottom:8px;">历史记录</div>`;
+    sorted.slice(0, 12).forEach(p => {
+      html += `<div class="weight-row"><span style="color:var(--period);font-weight:700;">${p.date}</span><span style="flex:1;"></span><span style="color:var(--text-soft);font-size:12px;">经期开始</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  // --- Modal ---
+  html += `<div class="cal-modal-mask" id="pCalModal" onclick="closePCalModal(event)">
+    <div class="cal-modal" onclick="event.stopPropagation()">
+      <div style="font-size:15px;font-weight:800;margin-bottom:10px;">经期记录 · <span id="pCalModalDate"></span></div>
+      <div id="pCalModalInfo" style="font-size:12px;color:var(--text-soft);margin-bottom:8px;"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" onclick="markPeriodStart()" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">标记为经期开始</button>
+        <button class="btn undo-btn" id="pCalDelBtn" onclick="deletePeriod()" style="display:none;">删除此日记录</button>
+      </div>
+    </div>
+  </div>`;
+
+  html += `</div>`;
+  panel.innerHTML = html;
+}
+
+function computePeriodMap() {
+  // Returns map: dateStr -> { type: 'actual' | 'predict', startDate: '...' }
+  const map = {};
+  const cycle = state.periodSettings.cycle || 28;
+  const duration = state.periodSettings.duration || 5;
+  const sorted = [...state.periodLog].sort((a,b) => a.date.localeCompare(b.date));
+  if (sorted.length === 0) return map;
+
+  // Mark actual period days (from each start date, for `duration` days)
+  sorted.forEach(p => {
+    const start = new Date(p.date + 'T00:00:00');
+    for (let i = 0; i < duration; i++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      map[key] = { type: 'actual', startDate: p.date };
+    }
+  });
+
+  // Predict future periods from the last recorded start date
+  const lastStart = new Date(sorted[sorted.length-1].date + 'T00:00:00');
+  const today = new Date(todayKey() + 'T00:00:00');
+
+  // Predict next 3 cycles
+  for (let c = 1; c <= 3; c++) {
+    const predStart = new Date(lastStart);
+    predStart.setDate(predStart.getDate() + cycle * c);
+    if (predStart > today) {
+      for (let i = 0; i < duration; i++) {
+        const d = new Date(predStart);
+        d.setDate(d.getDate() + i);
+        const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        if (!map[key]) map[key] = { type: 'predict', startDate: key };
+      }
+    }
+  }
+
+  return map;
+}
+
+function renderPeriodCalendar(periodMap) {
+  const year = pCalYear, month = pCalMonth;
+  const firstDay = new Date(year, month-1, 1);
+  const lastDay = new Date(year, month, 0);
+  const startDow = firstDay.getDay();
+  const totalDays = lastDay.getDate();
+  const today = todayKey();
+
+  const dow = ['日','一','二','三','四','五','六'];
+  let html = '';
+  dow.forEach(d => { html += `<div class="cal-cell cal-dow">${d}</div>`; });
+
+  for (let i = 0; i < startDow; i++) html += `<div class="cal-cell cal-empty"></div>`;
+
+  for (let d = 1; d <= totalDays; d++) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === today;
+    const pInfo = periodMap[dateStr];
+    const cls = isToday ? ' cal-today' : '';
+    const periodCls = pInfo ? ' cal-period-cell' : '';
+    html += `<div class="cal-cell${cls}${periodCls}" onclick="openPCalDay('${dateStr}')">
+      <span class="cal-day">${d}</span>
+      ${pInfo ? `<span class="cal-period-dot ${pInfo.type}"></span>` : ''}
+    </div>`;
+  }
+  return html;
+}
+
+function pCalShift(dir) {
+  pCalMonth += dir;
+  if (pCalMonth > 12) { pCalMonth = 1; pCalYear++; }
+  if (pCalMonth < 1) { pCalMonth = 12; pCalYear--; }
+  renderPeriodPage();
+}
+
+function pCalJumpTo(dateStr) {
+  if (!dateStr) return;
+  const [y,m] = dateStr.split('-');
+  pCalYear = parseInt(y); pCalMonth = parseInt(m);
+  renderPeriodPage();
+}
+
+let pCalEditingDate = '';
+
+function openPCalDay(dateStr) {
+  pCalEditingDate = dateStr;
+  document.getElementById('pCalModalDate').textContent = dateStr;
+  const existing = state.periodLog.find(p => p.date === dateStr);
+  const info = document.getElementById('pCalModalInfo');
+  if (existing) {
+    info.textContent = '这一天已标记为经期开始';
+    document.getElementById('pCalDelBtn').style.display = 'inline-block';
+  } else {
+    const periodMap = computePeriodMap();
+    const pInfo = periodMap[dateStr];
+    if (pInfo) {
+      info.textContent = pInfo.type === 'actual' ? '经期中（开始于 ' + pInfo.startDate + '）' : '预测经期日';
+    } else {
+      info.textContent = '点击下方按钮标记为经期开始';
+    }
+    document.getElementById('pCalDelBtn').style.display = 'none';
+  }
+  document.getElementById('pCalModal').classList.add('show');
+}
+
+function closePCalModal(e) {
+  if (e && e.target !== document.getElementById('pCalModal')) return;
+  document.getElementById('pCalModal').classList.remove('show');
+  pCalEditingDate = '';
+}
+
+function markPeriodStart() {
+  if (!pCalEditingDate) return;
+  const existing = state.periodLog.find(p => p.date === pCalEditingDate);
+  if (!existing) {
+    state.periodLog.push({ date: pCalEditingDate, ts: Date.now() });
+    state.periodLog.sort((a,b) => a.date.localeCompare(b.date));
+  }
+  saveLocal(); syncToSupa();
+  document.getElementById('pCalModal').classList.remove('show');
+  renderPeriodPage();
+  toast('已标记 ' + pCalEditingDate + ' 为经期开始');
+}
+
+function deletePeriod() {
+  if (!confirm('删除 ' + pCalEditingDate + ' 的经期开始记录？')) return;
+  state.periodLog = state.periodLog.filter(p => p.date !== pCalEditingDate);
+  saveLocal(); syncToSupa();
+  document.getElementById('pCalModal').classList.remove('show');
+  renderPeriodPage();
+  toast('已删除');
+}
+
+function addPeriodFromQuick() {
+  const date = document.getElementById('periodDate').value;
+  if (!date) { toast('请选择日期'); return; }
+  const existing = state.periodLog.find(p => p.date === date);
+  if (!existing) {
+    state.periodLog.push({ date, ts: Date.now() });
+    state.periodLog.sort((a,b) => a.date.localeCompare(b.date));
+  }
+  saveLocal(); syncToSupa();
+  pCalYear = parseInt(date.split('-')[0]); pCalMonth = parseInt(date.split('-')[1]);
+  renderPeriodPage();
+  toast('已标记 ' + date + ' 为经期开始');
+}
+
+function updatePeriodSettings() {
+  const c = parseInt(document.getElementById('cycleDays').value);
+  const d = parseInt(document.getElementById('durationDays').value);
+  if (c >= 15 && c <= 45) state.periodSettings.cycle = c;
+  if (d >= 2 && d <= 10) state.periodSettings.duration = d;
+  saveLocal(); syncToSupa();
+  renderPeriodPage();
+  toast('已更新周期设置');
 }
 
 // ==================== Weight Page ====================
@@ -1224,6 +1497,12 @@ function doImport(e) {
         data.weightLog.forEach(w => { if (!exist.has(w.date)) state.weightLog.push(w); });
         state.weightLog.sort((a,b)=>a.date.localeCompare(b.date));
       }
+      if (Array.isArray(data.periodLog)) {
+        const existP = new Set(state.periodLog.map(p=>p.date));
+        data.periodLog.forEach(p => { if (!existP.has(p.date)) state.periodLog.push(p); });
+        state.periodLog.sort((a,b)=>a.date.localeCompare(b.date));
+      }
+      if (data.periodSettings) state.periodSettings = Object.assign(state.periodSettings, data.periodSettings);
       saveLocal(); syncToSupa(); render(); toast('导入成功');
     } catch(err) { toast('导入失败：格式错误'); }
   };
@@ -1231,7 +1510,7 @@ function doImport(e) {
 }
 function clearAll() {
   if (confirm('确定清空所有数据？此操作不可恢复。')) {
-    state = { days: {}, weightLog: [], settings: state.settings };
+    state = { days: {}, weightLog: [], periodLog: [], periodSettings: state.periodSettings, settings: state.settings };
     saveLocal(); syncToSupa(); render(); toast('已清空');
   }
 }
