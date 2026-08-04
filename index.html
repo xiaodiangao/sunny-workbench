@@ -377,7 +377,7 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; font-weight: 800;
   color: #FFF;
-  margin-top: 4px;
+  margin-top: 0px;
   line-height: 1;
   align-self: center;
 }
@@ -385,6 +385,7 @@ html, body {
 .cal-period-circle.predict { background: #F8BBD0; color: #AD1457; }
 .cal-period-circle.ovulation { background: #CE93D8; color: #6A1B9A; }
 .cal-period-circle.today { background: #90CAF9; color: #1565C0; }
+.cal-period-circle.plain { background: transparent; color: var(--text); }
 .cal-period-cell { background: transparent; }
 
 /* ===== Period legend ===== */
@@ -1205,14 +1206,13 @@ function renderPeriodCalendar(periodMap) {
     let cls = 'cal-cell';
 
     if (isToday && pInfo) {
-      // Today that also has a period/ovulation meaning - show period color, but we can overlay? Keep simple: priority period > today > ovulation
       inner = `<span class="cal-period-circle ${pInfo.type}">${d}</span>`;
     } else if (isToday) {
       inner = `<span class="cal-period-circle today">${d}</span>`;
     } else if (pInfo) {
       inner = `<span class="cal-period-circle ${pInfo.type}">${d}</span>`;
     } else {
-      inner = `<span class="cal-day">${d}</span>`;
+      inner = `<span class="cal-period-circle plain">${d}</span>`;
     }
 
     html += `<div class="${cls}" onclick="openPCalDay('${dateStr}')">${inner}</div>`;
