@@ -594,13 +594,14 @@ async function testSupa() {
   const key = document.getElementById('supaKey').value.trim();
   if (!url || !key) { toast('请填写 URL 和 key'); return; }
   document.getElementById('supaStatus').textContent = '测试中...';
+  const fullUrl = url.replace(/\/$/,'') + '/rest/v1/sunny_data?select=id&limit=1';
   try {
-    const r = await fetch(url.replace(/\/$/,'') + '/rest/v1/sunny_data?select=id&limit=1', {
+    const r = await fetch(fullUrl, {
+      method: 'GET',
       headers: {
         'apikey': key,
         'Authorization': 'Bearer '+key,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
+        'Content-Type': 'application/json'
       }
     });
     if (r.status === 404 || r.status === 400) {
@@ -610,11 +611,14 @@ async function testSupa() {
       supaConfig = { url, key };
       localStorage.setItem(SUPA_KEY, JSON.stringify(supaConfig));
     } else if (r.status === 401) {
-      document.getElementById('supaStatus').textContent = '失败：key 不正确';
+      document.getElementById('supaStatus').textContent = '失败：key 不正确（401）';
     } else {
-      document.getElementById('supaStatus').textContent = '失败：HTTP ' + r.status;
+      const txt = await r.text().catch(()=> '');
+      document.getElementById('supaStatus').textContent = '失败：HTTP ' + r.status + ' ' + txt.slice(0,80);
     }
-  } catch(e) { document.getElementById('supaStatus').textContent = '失败：' + e.message; }
+  } catch(e) {
+    document.getElementById('supaStatus').textContent = '失败：' + e.name + ' - ' + e.message + ' | URL: ' + fullUrl.slice(0,50);
+  }
 }
 
 function saveSupa() {
