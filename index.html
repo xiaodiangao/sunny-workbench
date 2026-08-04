@@ -370,18 +370,22 @@ html, body {
   border: 1px solid var(--line); border-radius: 8px;
 }
 
-/* ===== Period dot ===== */
-.cal-period-dot {
-  width: 40px; height: 40px;
+/* ===== Period circle ===== */
+.cal-period-circle {
+  width: 38px; height: 38px;
   border-radius: 50%;
-  margin-top: 0px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: #FFF;
+  margin-top: 4px;
   line-height: 1;
   align-self: center;
 }
-.cal-period-dot.actual { background: var(--period); }
-.cal-period-dot.predict { background: var(--period-light); }
-.cal-period-cell { background: #FFF0F4; }
-.cal-period-cell.cal-today { background: var(--yellow); }
+.cal-period-circle.actual { background: var(--period); }
+.cal-period-circle.predict { background: var(--period-light); color: #8B3A3A; }
+.cal-period-circle.ovulation { background: #E1BEE7; color: #6A1B9A; }
+.cal-period-circle.today { background: #BBDEFB; color: #1565C0; }
+.cal-period-cell { background: transparent; }
 
 /* ===== Period legend ===== */
 .period-legend {
@@ -389,7 +393,11 @@ html, body {
   margin-top: 8px; font-size: 11px; color: var(--text-soft); font-weight: 700;
 }
 .period-legend-item { display: flex; align-items: center; gap: 5px; }
-.period-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.period-legend-dot { width: 14px; height: 14px; border-radius: 50%; }
+.period-legend-dot.actual { background: var(--period); }
+.period-legend-dot.predict { background: var(--period-light); }
+.period-legend-dot.ovulation { background: #E1BEE7; }
+.period-legend-dot.today { background: #BBDEFB; }
 
 /* ===== Calendar Modal ===== */
 .cal-modal-mask {
@@ -1036,8 +1044,10 @@ function renderPeriodPage() {
     </div>
     <div class="cal-grid" id="pCalGrid">${renderPeriodCalendar(periodMap)}</div>
     <div class="period-legend">
-      <div class="period-legend-item"><span class="period-legend-dot" style="background:var(--period);"></span>已记录</div>
-      <div class="period-legend-item"><span class="period-legend-dot" style="background:var(--period-light);"></span>预测</div>
+      <div class="period-legend-item"><span class="period-legend-dot actual"></span>经期</div>
+      <div class="period-legend-item"><span class="period-legend-dot predict"></span>预测经期</div>
+      <div class="period-legend-item"><span class="period-legend-dot ovulation"></span>排卵期</div>
+      <div class="period-legend-item"><span class="period-legend-dot today"></span>今天</div>
     </div>
   </div>`;
 
@@ -1098,35 +1108,14 @@ function renderPeriodPage() {
 }
 
 function computePeriodMap() {
-  // Returns map: dateStr -> { type: 'actual' | 'predict', startDate: '...' }
   const map = {};
   const cycle = state.periodSettings.cycle || 28;
   const defaultDuration = state.periodSettings.duration || 5;
   const sorted = [...state.periodLog].sort((a,b) => a.date.localeCompare(b.date));
-  if (sorted.length === 0) return map;
 
-  // Mark actual period days (from each start date, until endDate or defaultDuration)
-  sorted.forEach(p => {
-    const start = new Date(p.date + 'T00:00:00');
-    let dur;
-    if (p.endDate) {
-      // Actual duration from start to end (inclusive)
-      const end = new Date(p.endDate + 'T00:00:00');
-      dur = Math.round((end - start) / 86400000) + 1;
-    } else {
-      dur = defaultDuration;
-    }
-    for (let i = 0; i < dur; i++) {
-      const d = new Date(start);
-      d.setDate(d.getDate() + i);
-      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      map[key] = { type: 'actual', startDate: p.date };
-    }
-  });
-
-  // Predict future periods from the last recorded start date
-  // Use average actual cycle if we have multiple records, otherwise use settings
+  // Calculate average cycle and duration from actual records
   let avgCycle = cycle;
+  let avgDur = defaultDuration;
   if (sorted.length >= 2) {
     const gaps = [];
     for (let i = 1; i < sorted.length; i++) {
@@ -1136,26 +1125,59 @@ function computePeriodMap() {
     }
     avgCycle = Math.round(gaps.reduce((a,b)=>a+b,0) / gaps.length);
   }
+  const actualDurs = sorted.map(p => {
+    if (p.endDate) {
+      return Math.round((new Date(p.endDate+'T00:00:00') - new Date(p.date+'T00:00:00')) / 86400000) + 1;
+    }
+    return defaultDuration;
+  }).filter(d => d > 0);
+  if (actualDurs.length) avgDur = Math.round(actualDurs.reduce((a,b)=>a+b,0) / actualDurs.length);
 
-  const lastStart = new Date(sorted[sorted.length-1].date + 'T00:00:00');
   const today = new Date(todayKey() + 'T00:00:00');
-  const lastDur = sorted[sorted.length-1].endDate
-    ? Math.round((new Date(sorted[sorted.length-1].endDate+'T00:00:00') - lastStart) / 86400000) + 1
-    : defaultDuration;
 
-  // Predict next 3 cycles
-  for (let c = 1; c <= 3; c++) {
-    const predStart = new Date(lastStart);
-    predStart.setDate(predStart.getDate() + avgCycle * c);
-    if (predStart > today) {
-      for (let i = 0; i < lastDur; i++) {
-        const d = new Date(predStart);
-        d.setDate(d.getDate() + i);
-        const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-        if (!map[key]) map[key] = { type: 'predict', startDate: key };
+  // Mark actual period days and predict future periods
+  const futurePeriods = [];
+  sorted.forEach(p => {
+    const start = new Date(p.date + 'T00:00:00');
+    let dur = p.endDate
+      ? Math.round((new Date(p.endDate+'T00:00:00') - start) / 86400000) + 1
+      : defaultDuration;
+    for (let i = 0; i < dur; i++) {
+      const d = new Date(start); d.setDate(d.getDate() + i);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      map[key] = { type: 'actual', startDate: p.date };
+    }
+    // predict this cycle's future period
+    futurePeriods.push({ start: new Date(start), dur, offset: 0 });
+  });
+
+  // Predict next 3 future cycles based on last start
+  if (sorted.length > 0) {
+    const lastStart = new Date(sorted[sorted.length-1].date + 'T00:00:00');
+    for (let c = 1; c <= 3; c++) {
+      const predStart = new Date(lastStart);
+      predStart.setDate(predStart.getDate() + avgCycle * c);
+      if (predStart > today) {
+        futurePeriods.push({ start: predStart, dur: avgDur, offset: c });
       }
     }
   }
+
+  futurePeriods.forEach(fp => {
+    for (let i = 0; i < fp.dur; i++) {
+      const d = new Date(fp.start); d.setDate(d.getDate() + i);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if (!map[key]) map[key] = { type: fp.offset === 0 && fp.start <= today ? 'actual' : 'predict', startDate: key };
+    }
+    // Ovulation: typically 14 days before next period, window +/- 4 days
+    const ovuCenter = new Date(fp.start);
+    ovuCenter.setDate(ovuCenter.getDate() - 14);
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(ovuCenter); d.setDate(d.getDate() + i);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if (!map[key]) map[key] = { type: 'ovulation', startDate: key };
+    }
+  });
 
   return map;
 }
@@ -1178,12 +1200,22 @@ function renderPeriodCalendar(periodMap) {
     const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday = dateStr === today;
     const pInfo = periodMap[dateStr];
-    const cls = isToday ? ' cal-today' : '';
-    const periodCls = pInfo ? ' cal-period-cell' : '';
-    html += `<div class="cal-cell${cls}${periodCls}" onclick="openPCalDay('${dateStr}')">
-      <span class="cal-day">${d}</span>
-      ${pInfo ? `<span class="cal-period-dot ${pInfo.type}"></span>` : ''}
-    </div>`;
+
+    let inner = '';
+    let cls = 'cal-cell';
+
+    if (isToday && pInfo) {
+      // Today that also has a period/ovulation meaning - show period color, but we can overlay? Keep simple: priority period > today > ovulation
+      inner = `<span class="cal-period-circle ${pInfo.type}">${d}</span>`;
+    } else if (isToday) {
+      inner = `<span class="cal-period-circle today">${d}</span>`;
+    } else if (pInfo) {
+      inner = `<span class="cal-period-circle ${pInfo.type}">${d}</span>`;
+    } else {
+      inner = `<span class="cal-day">${d}</span>`;
+    }
+
+    html += `<div class="${cls}" onclick="openPCalDay('${dateStr}')">${inner}</div>`;
   }
   return html;
 }
