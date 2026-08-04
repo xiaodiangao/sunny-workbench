@@ -326,6 +326,50 @@ html, body {
 }
 .cal-has { background: #FFFDF0; }
 
+/* ===== History calendar ===== */
+.cal-done-count {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-soft);
+  margin-top: 4px;
+  line-height: 1;
+}
+.cal-cell.hist-all { background: #E8F5E9; }
+.cal-cell.hist-all.cal-today { background: var(--yellow); }
+.cal-cell.hist-all .cal-done-count { color: var(--done); }
+.cal-cell.hist-partial { background: var(--yellow-light); }
+.cal-cell.hist-partial.cal-today { background: var(--yellow); }
+.hist-legend {
+  display: flex; gap: 14px; justify-content: center;
+  margin-top: 8px; font-size: 11px; color: var(--text-soft); font-weight: 700;
+}
+.hist-legend-item { display: flex; align-items: center; gap: 5px; }
+.hist-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+.cal-modal.hist-modal { max-width: 440px; max-height: 80vh; overflow-y: auto; }
+.hist-task-row {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.hist-task-row:last-child { border-bottom: none; }
+.hist-task-head {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700;
+}
+.hist-task-head svg { width: 16px; height: 16px; }
+.hist-edit-row {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  margin-top: 4px; margin-left: 24px;
+}
+.hist-edit-row input {
+  font-size: 12px; padding: 4px 8px;
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.hist-edit-row .btn { font-size: 11px; padding: 4px 10px; }
+.hist-note-row { margin: 2px 0 4px 24px; }
+.hist-note-row input {
+  width: 100%; font-size: 11px; padding: 4px 8px;
+  border: 1px solid var(--line); border-radius: 8px;
+}
+
 /* ===== Period dot ===== */
 .cal-period-dot {
   width: 40px; height: 40px;
@@ -814,71 +858,123 @@ function saveTask(id) {
 }
 
 // ==================== History ====================
-let histEditingDate = null;
+let hCalYear, hCalMonth;
+let histEditingDate = '';
 
 function renderHistoryPanel() {
   const panel = document.getElementById('panel-history');
-  const dates = Object.keys(state.days).filter(d => d !== todayKey()).sort().reverse();
+  const now = new Date();
+  if (!hCalYear) { hCalYear = now.getFullYear(); hCalMonth = now.getMonth() + 1; }
 
-  let html = `<div class="panel-header"><div style="font-size:28px;">☼</div><div><div class="panel-title">历史记录</div><div class="panel-sub">点击展开可补打卡或修改记录</div></div></div><div class="panel-body">`;
-  if (dates.length === 0) {
-    html += `<div class="empty-state">还没有历史记录<br>完成今天，开启你的阳光日记吧</div>`;
-  } else {
-    html += `<div class="history-block">`;
-    dates.slice(0, 60).forEach(dk => {
-      const day = state.days[dk];
-      const doneCount = TASKS.filter(t => day[t.id] && day[t.id].done).length;
-      const allDone = doneCount === TASKS.length;
-      const d = new Date(dk+'T00:00:00');
-      const week = ['日','一','二','三','四','五','六'][d.getDay()];
-      html += `<div class="history-card" onclick="toggleHistCard('${dk}', event)">
-        <div class="history-head">
-          <div class="history-date">${dk.slice(5)} 周${week}</div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span class="history-summary">${allDone?'全完成':doneCount+'/'+TASKS.length}</span>
-            <span class="history-toggle">▶</span>
-          </div>
-        </div>
-        <div class="history-body" id="histBody-${dk}"></div>
-      </div>`;
-    });
-    html += `</div>`;
-  }
+  let html = `<div class="panel-header"><div style="font-size:28px;">☼</div><div><div class="panel-title">历史记录</div><div class="panel-sub">点击日期查看详情或补打卡</div></div></div><div class="panel-body">`;
+
+  // --- Calendar ---
+  html += `<div class="task-detail-card" style="padding:12px 16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <button class="cal-nav-btn" onclick="hCalShift(-1)">◀</button>
+      <span style="font-size:15px;font-weight:800;color:var(--text);">${hCalYear}年${hCalMonth}月</span>
+      <button class="cal-nav-btn" onclick="hCalShift(1)">▶</button>
+    </div>
+    <div class="cal-grid">${renderHistoryCalendar()}</div>
+    <div class="hist-legend">
+      <div class="hist-legend-item"><span class="hist-legend-dot" style="background:#E8F5E9;border:1px solid var(--done);"></span>全完成</div>
+      <div class="hist-legend-item"><span class="hist-legend-dot" style="background:var(--yellow-light);"></span>部分完成</div>
+      <div class="hist-legend-item"><span class="hist-legend-dot" style="background:#FFF;border:1px solid var(--line);"></span>未记录</div>
+    </div>
+  </div>`;
+
+  // --- Modal ---
+  html += `<div class="cal-modal-mask" id="hCalModal" onclick="closeHistModal(event)">
+    <div class="cal-modal hist-modal" onclick="event.stopPropagation()">
+      <div style="font-size:15px;font-weight:800;margin-bottom:12px;">打卡详情 · <span id="hCalModalDate"></span></div>
+      <div id="hCalModalBody"></div>
+    </div>
+  </div>`;
+
   html += `</div>`;
   panel.innerHTML = html;
 }
 
-function toggleHistCard(dk, event) {
-  const card = event.currentTarget;
-  const wasOpen = card.classList.contains('open');
-  card.classList.toggle('open');
-  if (!wasOpen) {
-    renderHistBody(dk);
+function renderHistoryCalendar() {
+  const year = hCalYear, month = hCalMonth;
+  const firstDay = new Date(year, month-1, 1);
+  const lastDay = new Date(year, month, 0);
+  const startDow = firstDay.getDay();
+  const totalDays = lastDay.getDate();
+  const today = todayKey();
+
+  const dow = ['日','一','二','三','四','五','六'];
+  let html = '';
+  dow.forEach(d => { html += `<div class="cal-cell cal-dow">${d}</div>`; });
+
+  for (let i = 0; i < startDow; i++) html += `<div class="cal-cell cal-empty"></div>`;
+
+  for (let d = 1; d <= totalDays; d++) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === today;
+    const day = state.days[dateStr];
+    const hasData = day && Object.keys(day).some(k => day[k] && day[k].done);
+    let doneCount = 0;
+    let cls = '';
+    if (day) {
+      doneCount = TASKS.filter(t => day[t.id] && day[t.id].done).length;
+      if (doneCount === TASKS.length) cls = ' hist-all';
+      else if (doneCount > 0) cls = ' hist-partial';
+    }
+    const todayCls = isToday ? ' cal-today' : '';
+    html += `<div class="cal-cell${cls}${todayCls}" onclick="openHistCalDay('${dateStr}')">
+      <span class="cal-day">${d}</span>
+      ${hasData ? `<span class="cal-done-count">${doneCount}/${TASKS.length}</span>` : ''}
+    </div>`;
   }
+  return html;
 }
 
-function renderHistBody(dk) {
-  const body = document.getElementById('histBody-'+dk);
+function hCalShift(dir) {
+  hCalMonth += dir;
+  if (hCalMonth > 12) { hCalMonth = 1; hCalYear++; }
+  if (hCalMonth < 1) { hCalMonth = 12; hCalYear--; }
+  renderHistoryPanel();
+}
+
+function openHistCalDay(dateStr) {
+  histEditingDate = dateStr;
+  document.getElementById('hCalModalDate').textContent = dateStr;
+  renderHistModalBody(dateStr);
+  document.getElementById('hCalModal').classList.add('show');
+}
+
+function closeHistModal(e) {
+  if (e && e.target !== document.getElementById('hCalModal')) return;
+  document.getElementById('hCalModal').classList.remove('show');
+  histEditingDate = '';
+  // Re-render calendar to reflect changes
+  renderHistoryPanel();
+}
+
+function renderHistModalBody(dk) {
+  const body = document.getElementById('hCalModalBody');
   if (!body) return;
   const day = state.days[dk] || {};
-  let html = '';
+  const doneCount = TASKS.filter(t => day[t.id] && day[t.id].done).length;
+  let html = `<div style="font-size:12px;color:var(--text-soft);margin-bottom:10px;font-weight:700;">完成 ${doneCount}/${TASKS.length}</div>`;
   TASKS.forEach(t => {
     const rec = day[t.id] || { done: false, value: '', note: '' };
-    html += `<div class="history-item ${rec.done?'':'miss'}" style="flex-wrap:wrap;">
-      <span style="color:${t.color}">${ICONS[t.id]}</span>
-      <span class="h-name">${t.name}</span>
-      ${rec.value ? `<span class="h-value">${rec.value}${t.unit||''}</span>` : ''}
-      <span style="color:${rec.done?'var(--done)':'var(--text-soft)'};font-size:14px;">${rec.done?'✓':'—'}</span>
-    </div>`;
-    if (rec.note) html += `<div style="font-size:11px;color:var(--text-soft);margin:-4px 0 4px 30px;width:100%;">备注：${rec.note}</div>`;
-    // Edit row
-    html += `<div style="width:100%;margin:4px 0 8px 28px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-      <input type="${t.inputType}" value="${rec.value||''}" placeholder="${t.inputLabel}" style="flex:1;min-width:80px;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;" id="histIn_${dk}_${t.id}">
-      <button class="btn" onclick="histToggleDone('${dk}','${t.id}')" style="font-size:11px;padding:4px 10px;${rec.done?'background:var(--text-soft);':'background:var(--done);'}color:#FFF;">${rec.done?'撤销完成':'补打卡'}</button>
-      <button class="btn" onclick="histSave('${dk}','${t.id}')" style="font-size:11px;padding:4px 10px;background:var(--yellow);color:#8B6914;">保存</button>
-    </div>`;
-    html += `<div style="width:100%;margin:-4px 0 4px 28px;">
-      <input type="text" value="${rec.note||''}" placeholder="备注" style="width:100%;font-size:11px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;" id="histNote_${dk}_${t.id}">
+    html += `<div class="hist-task-row">
+      <div class="hist-task-head">
+        <span style="color:${t.color}">${ICONS[t.id]}</span>
+        <span style="flex:1;color:${rec.done?'var(--text)':'var(--text-soft)'};${rec.done?'':'text-decoration:line-through;'}">${t.name}</span>
+        ${rec.value ? `<span style="color:var(--yellow-deep);font-size:12px;">${rec.value}${t.unit||''}</span>` : ''}
+        <span style="color:${rec.done?'var(--done)':'var(--text-soft)'};font-size:14px;">${rec.done?'✓':'—'}</span>
+      </div>
+      <div class="hist-edit-row">
+        <input type="${t.inputType}" value="${rec.value||''}" placeholder="${t.inputLabel}" style="flex:1;min-width:80px;" id="histIn_${dk}_${t.id}">
+        <button class="btn" onclick="histToggleDone('${dk}','${t.id}')" style="${rec.done?'background:var(--text-soft);':'background:var(--done);'}color:#FFF;">${rec.done?'撤销':'补打卡'}</button>
+        <button class="btn" onclick="histSave('${dk}','${t.id}')" style="background:var(--yellow);color:#8B6914;">保存</button>
+      </div>
+      <div class="hist-note-row">
+        <input type="text" value="${rec.note||''}" placeholder="备注（可选）" id="histNote_${dk}_${t.id}">
+      </div>
     </div>`;
   });
   body.innerHTML = html;
@@ -890,14 +986,8 @@ function histToggleDone(dk, tid) {
   state.days[dk][tid].done = !state.days[dk][tid].done;
   state.days[dk][tid].ts = Date.now();
   saveLocal(); syncToSupa();
-  renderHistBody(dk);
-  // Update summary
-  const day = state.days[dk];
-  const doneCount = TASKS.filter(t => day[t.id] && day[t.id].done).length;
-  const allDone = doneCount === TASKS.length;
-  const card = document.getElementById('histBody-'+dk).parentElement;
-  const summary = card.querySelector('.history-summary');
-  if (summary) summary.textContent = allDone ? '全完成' : doneCount+'/'+TASKS.length;
+  renderHistModalBody(dk);
+  renderSidebar();
 }
 
 function histSave(dk, tid) {
@@ -918,7 +1008,7 @@ function histSave(dk, tid) {
     }
   }
   saveLocal(); syncToSupa();
-  renderHistBody(dk);
+  renderHistModalBody(dk);
   toast('已保存 ' + dk + ' 的记录');
 }
 
