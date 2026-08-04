@@ -596,14 +596,21 @@ async function testSupa() {
   document.getElementById('supaStatus').textContent = '测试中...';
   try {
     const r = await fetch(url.replace(/\/$/,'') + '/rest/v1/sunny_data?select=id&limit=1', {
-      headers: { 'apikey': key, 'Authorization': 'Bearer '+key }
+      headers: {
+        'apikey': key,
+        'Authorization': 'Bearer '+key,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      }
     });
     if (r.status === 404 || r.status === 400) {
-      document.getElementById('supaStatus').innerHTML = '提示：需建表。请到 Supabase SQL Editor 执行：<br><code style="font-size:10px;background:#FFF;padding:4px;border-radius:4px;display:block;margin-top:4px;">create table sunny_data (id text primary key, data text, updated_at timestamptz);</code>';
+      document.getElementById('supaStatus').innerHTML = '提示：需建表。请到 Supabase SQL Editor 执行建表代码';
     } else if (r.ok) {
-      document.getElementById('supaStatus').textContent = '连接成功！';
+      document.getElementById('supaStatus').textContent = '✓ 连接成功！';
       supaConfig = { url, key };
       localStorage.setItem(SUPA_KEY, JSON.stringify(supaConfig));
+    } else if (r.status === 401) {
+      document.getElementById('supaStatus').textContent = '失败：key 不正确';
     } else {
       document.getElementById('supaStatus').textContent = '失败：HTTP ' + r.status;
     }
