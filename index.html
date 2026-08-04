@@ -328,9 +328,9 @@ html, body {
 
 /* ===== Period dot ===== */
 .cal-period-dot {
-  width: 7px; height: 7px;
+  width: 20px; height: 20px;
   border-radius: 50%;
-  margin-top: 5px;
+  margin-top: 4px;
   line-height: 1;
 }
 .cal-period-dot.actual { background: var(--period); }
@@ -880,9 +880,10 @@ function renderPeriodPage() {
       <div style="flex:1;min-width:130px;">
         <input type="date" class="setting-input" id="periodDate" value="${todayKey()}" onchange="pCalJumpTo(this.value)">
       </div>
-      <button class="btn" onclick="addPeriodFromQuick()" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">标记经期</button>
+      <button class="btn" onclick="addPeriodFromQuick('start')" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">经期开始</button>
+      <button class="btn" onclick="addPeriodFromQuick('end')" style="background:var(--period-light);color:#8B3A3A;box-shadow:0 3px 0 #E57373;">经期结束</button>
     </div>
-    <div class="setting-hint" style="margin-top:6px;">选择日期后点「标记经期」，可标记开始日期或任意经期中的日期</div>
+    <div class="setting-hint" style="margin-top:6px;">选择日期后点「经期开始」或「经期结束」</div>
   </div>`;
 
   // --- Settings ---
@@ -906,7 +907,8 @@ function renderPeriodPage() {
     html += `<div class="task-detail-card">
       <div style="font-size:14px;font-weight:800;margin-bottom:8px;">历史记录</div>`;
     sorted.slice(0, 12).forEach(p => {
-      html += `<div class="weight-row"><span style="color:var(--period);font-weight:700;">${p.date}</span><span style="flex:1;"></span><span style="color:var(--text-soft);font-size:12px;">经期开始</span></div>`;
+      const label = p.endDate ? `${p.date} ~ ${p.endDate}` : `${p.date} 开始`;
+      html += `<div class="weight-row"><span style="color:var(--period);font-weight:700;">${label}</span><span style="flex:1;"></span><span style="color:var(--text-soft);font-size:12px;">经期记录</span></div>`;
     });
     html += `</div>`;
   }
@@ -914,10 +916,10 @@ function renderPeriodPage() {
   // --- Modal ---
   html += `<div class="cal-modal-mask" id="pCalModal" onclick="closePCalModal(event)">
     <div class="cal-modal" onclick="event.stopPropagation()">
-      <div style="font-size:15px;font-weight:800;margin-bottom:10px;">经期记录 · <span id="pCalModalDate"></span></div>
-      <div id="pCalModalInfo" style="font-size:12px;color:var(--text-soft);margin-bottom:8px;"></div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:12px;">经期记录 · <span id="pCalModalDate"></span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn" onclick="markPeriodStart()" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">标记为经期开始</button>
+        <button class="btn" onclick="markPeriodStart()" style="background:var(--period);color:#FFF;box-shadow:0 3px 0 #C62828;">经期开始</button>
+        <button class="btn" onclick="markPeriodEnd()" style="background:var(--period-light);color:#8B3A3A;box-shadow:0 3px 0 #E57373;">经期结束</button>
         <button class="btn undo-btn" id="pCalDelBtn" onclick="deletePeriod()" style="display:none;">删除此日记录</button>
       </div>
     </div>
@@ -931,14 +933,22 @@ function computePeriodMap() {
   // Returns map: dateStr -> { type: 'actual' | 'predict', startDate: '...' }
   const map = {};
   const cycle = state.periodSettings.cycle || 28;
-  const duration = state.periodSettings.duration || 5;
+  const defaultDuration = state.periodSettings.duration || 5;
   const sorted = [...state.periodLog].sort((a,b) => a.date.localeCompare(b.date));
   if (sorted.length === 0) return map;
 
-  // Mark actual period days (from each start date, for `duration` days)
+  // Mark actual period days (from each start date, until endDate or defaultDuration)
   sorted.forEach(p => {
     const start = new Date(p.date + 'T00:00:00');
-    for (let i = 0; i < duration; i++) {
+    let dur;
+    if (p.endDate) {
+      // Actual duration from start to end (inclusive)
+      const end = new Date(p.endDate + 'T00:00:00');
+      dur = Math.round((end - start) / 86400000) + 1;
+    } else {
+      dur = defaultDuration;
+    }
+    for (let i = 0; i < dur; i++) {
       const d = new Date(start);
       d.setDate(d.getDate() + i);
       const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -947,15 +957,30 @@ function computePeriodMap() {
   });
 
   // Predict future periods from the last recorded start date
+  // Use average actual cycle if we have multiple records, otherwise use settings
+  let avgCycle = cycle;
+  if (sorted.length >= 2) {
+    const gaps = [];
+    for (let i = 1; i < sorted.length; i++) {
+      const d1 = new Date(sorted[i-1].date + 'T00:00:00');
+      const d2 = new Date(sorted[i].date + 'T00:00:00');
+      gaps.push(Math.round((d2 - d1) / 86400000));
+    }
+    avgCycle = Math.round(gaps.reduce((a,b)=>a+b,0) / gaps.length);
+  }
+
   const lastStart = new Date(sorted[sorted.length-1].date + 'T00:00:00');
   const today = new Date(todayKey() + 'T00:00:00');
+  const lastDur = sorted[sorted.length-1].endDate
+    ? Math.round((new Date(sorted[sorted.length-1].endDate+'T00:00:00') - lastStart) / 86400000) + 1
+    : defaultDuration;
 
   // Predict next 3 cycles
   for (let c = 1; c <= 3; c++) {
     const predStart = new Date(lastStart);
-    predStart.setDate(predStart.getDate() + cycle * c);
+    predStart.setDate(predStart.getDate() + avgCycle * c);
     if (predStart > today) {
-      for (let i = 0; i < duration; i++) {
+      for (let i = 0; i < lastDur; i++) {
         const d = new Date(predStart);
         d.setDate(d.getDate() + i);
         const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -1015,18 +1040,9 @@ function openPCalDay(dateStr) {
   pCalEditingDate = dateStr;
   document.getElementById('pCalModalDate').textContent = dateStr;
   const existing = state.periodLog.find(p => p.date === dateStr);
-  const info = document.getElementById('pCalModalInfo');
   if (existing) {
-    info.textContent = '这一天已标记为经期开始';
     document.getElementById('pCalDelBtn').style.display = 'inline-block';
   } else {
-    const periodMap = computePeriodMap();
-    const pInfo = periodMap[dateStr];
-    if (pInfo) {
-      info.textContent = pInfo.type === 'actual' ? '经期中（开始于 ' + pInfo.startDate + '）' : '预测经期日';
-    } else {
-      info.textContent = '点击下方按钮标记为经期开始';
-    }
     document.getElementById('pCalDelBtn').style.display = 'none';
   }
   document.getElementById('pCalModal').classList.add('show');
@@ -1048,7 +1064,24 @@ function markPeriodStart() {
   saveLocal(); syncToSupa();
   document.getElementById('pCalModal').classList.remove('show');
   renderPeriodPage();
-  toast('已标记 ' + pCalEditingDate + ' 为经期开始');
+  toast('已标记 ' + pCalEditingDate + ' 经期开始');
+}
+
+function markPeriodEnd() {
+  if (!pCalEditingDate) return;
+  // Find the most recent period start that is on or before this date
+  const sorted = [...state.periodLog].sort((a,b) => b.date.localeCompare(a.date));
+  const startRec = sorted.find(p => p.date <= pCalEditingDate);
+  if (!startRec) {
+    toast('请先标记经期开始日期');
+    return;
+  }
+  // Set endDate on the start record
+  startRec.endDate = pCalEditingDate;
+  saveLocal(); syncToSupa();
+  document.getElementById('pCalModal').classList.remove('show');
+  renderPeriodPage();
+  toast('已标记 ' + pCalEditingDate + ' 经期结束');
 }
 
 function deletePeriod() {
@@ -1060,18 +1093,32 @@ function deletePeriod() {
   toast('已删除');
 }
 
-function addPeriodFromQuick() {
+function addPeriodFromQuick(type) {
   const date = document.getElementById('periodDate').value;
   if (!date) { toast('请选择日期'); return; }
-  const existing = state.periodLog.find(p => p.date === date);
-  if (!existing) {
-    state.periodLog.push({ date, ts: Date.now() });
-    state.periodLog.sort((a,b) => a.date.localeCompare(b.date));
+  if (type === 'start') {
+    const existing = state.periodLog.find(p => p.date === date);
+    if (!existing) {
+      state.periodLog.push({ date, ts: Date.now() });
+      state.periodLog.sort((a,b) => a.date.localeCompare(b.date));
+    }
+    saveLocal(); syncToSupa();
+    pCalYear = parseInt(date.split('-')[0]); pCalMonth = parseInt(date.split('-')[1]);
+    renderPeriodPage();
+    toast('已标记 ' + date + ' 经期开始');
+  } else if (type === 'end') {
+    const sorted = [...state.periodLog].sort((a,b) => b.date.localeCompare(a.date));
+    const startRec = sorted.find(p => p.date <= date);
+    if (!startRec) {
+      toast('请先标记经期开始日期');
+      return;
+    }
+    startRec.endDate = date;
+    saveLocal(); syncToSupa();
+    pCalYear = parseInt(date.split('-')[0]); pCalMonth = parseInt(date.split('-')[1]);
+    renderPeriodPage();
+    toast('已标记 ' + date + ' 经期结束');
   }
-  saveLocal(); syncToSupa();
-  pCalYear = parseInt(date.split('-')[0]); pCalMonth = parseInt(date.split('-')[1]);
-  renderPeriodPage();
-  toast('已标记 ' + date + ' 为经期开始');
 }
 
 function updatePeriodSettings() {
