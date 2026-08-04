@@ -803,11 +803,13 @@ function saveTask(id) {
 }
 
 // ==================== History ====================
+let histEditingDate = null;
+
 function renderHistoryPanel() {
   const panel = document.getElementById('panel-history');
   const dates = Object.keys(state.days).filter(d => d !== todayKey()).sort().reverse();
 
-  let html = `<div class="panel-header"><div style="font-size:28px;">☼</div><div><div class="panel-title">历史记录</div></div></div><div class="panel-body">`;
+  let html = `<div class="panel-header"><div style="font-size:28px;">☼</div><div><div class="panel-title">历史记录</div><div class="panel-sub">点击展开可补打卡或修改记录</div></div></div><div class="panel-body">`;
   if (dates.length === 0) {
     html += `<div class="empty-state">还没有历史记录<br>完成今天，开启你的阳光日记吧</div>`;
   } else {
@@ -818,7 +820,7 @@ function renderHistoryPanel() {
       const allDone = doneCount === TASKS.length;
       const d = new Date(dk+'T00:00:00');
       const week = ['日','一','二','三','四','五','六'][d.getDay()];
-      html += `<div class="history-card" onclick="this.classList.toggle('open')">
+      html += `<div class="history-card" onclick="toggleHistCard('${dk}', event)">
         <div class="history-head">
           <div class="history-date">${dk.slice(5)} 周${week}</div>
           <div style="display:flex;align-items:center;gap:10px;">
@@ -826,23 +828,87 @@ function renderHistoryPanel() {
             <span class="history-toggle">▶</span>
           </div>
         </div>
-        <div class="history-body">`;
-      TASKS.forEach(t => {
-        const rec = day[t.id] || {};
-        html += `<div class="history-item ${rec.done?'':'miss'}">
-          <span style="color:${t.color}">${ICONS[t.id]}</span>
-          <span class="h-name">${t.name}</span>
-          ${rec.value ? `<span class="h-value">${rec.value}${t.unit||''}</span>` : ''}
-          <span style="color:${rec.done?'var(--done)':'var(--text-soft)'};font-size:14px;">${rec.done?'✓':'—'}</span>
-        </div>`;
-        if (rec.note) html += `<div style="font-size:11px;color:var(--text-soft);margin:-4px 0 4px 30px;">备注：${rec.note}</div>`;
-      });
-      html += `</div></div>`;
+        <div class="history-body" id="histBody-${dk}"></div>
+      </div>`;
     });
     html += `</div>`;
   }
   html += `</div>`;
   panel.innerHTML = html;
+}
+
+function toggleHistCard(dk, event) {
+  const card = event.currentTarget;
+  const wasOpen = card.classList.contains('open');
+  card.classList.toggle('open');
+  if (!wasOpen) {
+    renderHistBody(dk);
+  }
+}
+
+function renderHistBody(dk) {
+  const body = document.getElementById('histBody-'+dk);
+  if (!body) return;
+  const day = state.days[dk] || {};
+  let html = '';
+  TASKS.forEach(t => {
+    const rec = day[t.id] || { done: false, value: '', note: '' };
+    html += `<div class="history-item ${rec.done?'':'miss'}" style="flex-wrap:wrap;">
+      <span style="color:${t.color}">${ICONS[t.id]}</span>
+      <span class="h-name">${t.name}</span>
+      ${rec.value ? `<span class="h-value">${rec.value}${t.unit||''}</span>` : ''}
+      <span style="color:${rec.done?'var(--done)':'var(--text-soft)'};font-size:14px;">${rec.done?'✓':'—'}</span>
+    </div>`;
+    if (rec.note) html += `<div style="font-size:11px;color:var(--text-soft);margin:-4px 0 4px 30px;width:100%;">备注：${rec.note}</div>`;
+    // Edit row
+    html += `<div style="width:100%;margin:4px 0 8px 28px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+      <input type="${t.inputType}" value="${rec.value||''}" placeholder="${t.inputLabel}" style="flex:1;min-width:80px;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;" id="histIn_${dk}_${t.id}">
+      <button class="btn" onclick="histToggleDone('${dk}','${t.id}')" style="font-size:11px;padding:4px 10px;${rec.done?'background:var(--text-soft);':'background:var(--done);'}color:#FFF;">${rec.done?'撤销完成':'补打卡'}</button>
+      <button class="btn" onclick="histSave('${dk}','${t.id}')" style="font-size:11px;padding:4px 10px;background:var(--yellow);color:#8B6914;">保存</button>
+    </div>`;
+    html += `<div style="width:100%;margin:-4px 0 4px 28px;">
+      <input type="text" value="${rec.note||''}" placeholder="备注" style="width:100%;font-size:11px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;" id="histNote_${dk}_${t.id}">
+    </div>`;
+  });
+  body.innerHTML = html;
+}
+
+function histToggleDone(dk, tid) {
+  if (!state.days[dk]) state.days[dk] = {};
+  if (!state.days[dk][tid]) state.days[dk][tid] = { done: false, value: '', note: '' };
+  state.days[dk][tid].done = !state.days[dk][tid].done;
+  state.days[dk][tid].ts = Date.now();
+  saveLocal(); syncToSupa();
+  renderHistBody(dk);
+  // Update summary
+  const day = state.days[dk];
+  const doneCount = TASKS.filter(t => day[t.id] && day[t.id].done).length;
+  const allDone = doneCount === TASKS.length;
+  const card = document.getElementById('histBody-'+dk).parentElement;
+  const summary = card.querySelector('.history-summary');
+  if (summary) summary.textContent = allDone ? '全完成' : doneCount+'/'+TASKS.length;
+}
+
+function histSave(dk, tid) {
+  if (!state.days[dk]) state.days[dk] = {};
+  if (!state.days[dk][tid]) state.days[dk][tid] = { done: false, value: '', note: '' };
+  const inp = document.getElementById('histIn_'+dk+'_'+tid);
+  const noteInp = document.getElementById('histNote_'+dk+'_'+tid);
+  if (inp) state.days[dk][tid].value = inp.value;
+  if (noteInp) state.days[dk][tid].note = noteInp.value;
+  state.days[dk][tid].ts = Date.now();
+  // Sync weight to weightLog
+  if (tid === 'weight' && state.days[dk][tid].value) {
+    const v = parseFloat(state.days[dk][tid].value);
+    if (!isNaN(v)) {
+      state.weightLog = state.weightLog.filter(w => w.date !== dk);
+      state.weightLog.push({ date: dk, value: v, note: state.days[dk][tid].note || '', ts: Date.now() });
+      state.weightLog.sort((a,b) => a.date.localeCompare(b.date));
+    }
+  }
+  saveLocal(); syncToSupa();
+  renderHistBody(dk);
+  toast('已保存 ' + dk + ' 的记录');
 }
 
 // ==================== Period Page ====================
