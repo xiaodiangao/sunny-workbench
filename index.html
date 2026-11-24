@@ -1153,14 +1153,17 @@ function computePeriodMap() {
     futurePeriods.push({ start: new Date(start), dur, offset: 0 });
   });
 
-  // Predict next 3 future cycles based on last start
+  // Predict upcoming cycles: keep predicting from last start until we cover today and beyond (max 3 shown)
   if (sorted.length > 0) {
     const lastStart = new Date(sorted[sorted.length-1].date + 'T00:00:00');
-    for (let c = 1; c <= 3; c++) {
-      const predStart = new Date(lastStart);
-      predStart.setDate(predStart.getDate() + avgCycle * c);
-      if (predStart > today) {
+    let added = 0;
+    for (let c = 1; c <= 12 && added < 3; c++) {
+      const predStart = new Date(lastStart.getTime() + avgCycle * c * 86400000);
+      const predEnd = new Date(predStart.getTime() + (avgDur - 1) * 86400000);
+      // Show this predicted cycle as long as it hasn't fully passed (end >= today)
+      if (predEnd >= today) {
         futurePeriods.push({ start: predStart, dur: avgDur, offset: c });
+        added++;
       }
     }
   }
