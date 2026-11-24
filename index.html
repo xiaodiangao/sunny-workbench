@@ -1765,6 +1765,40 @@ function closeSidebar() {
   document.body.classList.remove('sidebar-open');
 }
 
+// ==================== Swipe gestures (mobile) ====================
+// Swipe right from left edge = open sidebar; swipe left = close it
+(function() {
+  let startX = 0, startY = 0, tracking = false, fromEdge = false;
+
+  document.addEventListener('touchstart', function(e) {
+    if (window.innerWidth > 700) return;  // only mobile
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    fromEdge = startX <= 36;              // started near left edge
+    tracking = true;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    if (window.innerWidth > 700 || !tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;  // not a horizontal swipe
+    const sidebar = document.getElementById('sidebar');
+    const isOpen = sidebar.classList.contains('open');
+    if (!isOpen && fromEdge && dx > 0) {
+      // swipe right from edge -> open
+      sidebar.classList.add('open');
+      document.getElementById('sidebarOverlay').classList.add('show');
+      document.body.classList.add('sidebar-open');
+    } else if (isOpen && dx < 0) {
+      // swipe left -> close
+      closeSidebar();
+    }
+  }, { passive: true });
+})();
+
 // ==================== Toast ====================
 let toastTimer;
 function toast(msg) {
