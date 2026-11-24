@@ -34,7 +34,11 @@
 html, body {
   margin: 0; padding: 0; height: 100%;
   font-family: 'Comic Sans MS', 'PingFang SC', 'Microsoft YaHei', cursive, sans-serif;
-  background: linear-gradient(155deg, #FFF78D 0%, #FFEC5C 40%, #FFD319 100%);
+  background:
+    radial-gradient(1100px 750px at 92% 0%, rgba(255,236,92,0.85) 0%, rgba(255,236,92,0) 55%),
+    radial-gradient(1000px 720px at 0% 100%, rgba(255,211,25,0.55) 0%, rgba(255,211,25,0) 55%),
+    radial-gradient(700px 500px at 55% 45%, rgba(255,247,141,0.5) 0%, rgba(255,247,141,0) 60%),
+    linear-gradient(165deg, #FFFEF5 0%, #FFF9CE 55%, #FFF176 100%);
   background-attachment: fixed;
   color: var(--text);
   overflow: hidden;
