@@ -513,6 +513,8 @@ body::before {
   }
   .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
   .burger { display: block; }
+  /* 侧边栏打开时隐藏菜单按钮，避免遮挡侧边栏内容 */
+  body.sidebar-open .burger { opacity: 0; pointer-events: none; }
   .main { padding: 16px 12px; }
 }
 
@@ -1752,12 +1754,15 @@ function renderSettingsPanel() {
 function toggleSidebar() {
   const s = document.getElementById('sidebar');
   const o = document.getElementById('sidebarOverlay');
+  const opened = !s.classList.contains('open');
   s.classList.toggle('open');
   o.classList.toggle('show');
+  document.body.classList.toggle('sidebar-open', opened);
 }
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('show');
+  document.body.classList.remove('sidebar-open');
 }
 
 // ==================== Toast ====================
